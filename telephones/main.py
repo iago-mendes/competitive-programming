@@ -1,12 +1,14 @@
+from sys import stdin
+
 while True:
-	n, m = [int(i) for i in input().split()]
+	n, m = [int(i) for i in stdin.readline().split()]
 	if (n == m == 0):
 		break
 
 	calls = []
 	
 	for i in range(0, n):
-		source, destination, start, duration = [int(j) for j in input().split()]
+		source, destination, start, duration = [int(j) for j in stdin.readline().split()]
 
 		seconds = []
 
@@ -16,7 +18,7 @@ while True:
 		calls.append(seconds)
 
 	for i in range(0, m):
-		start, duration = [int(j) for j in input().split()]
+		start, duration = [int(j) for j in stdin.readline().split()]
 
 		numberOfCalls = 0
 		for call in calls:
