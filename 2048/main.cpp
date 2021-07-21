@@ -1,118 +1,164 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Element {
-	public:
-		int value;
-		bool merged;
-};
-
-Element game[4][4];
+int game[4][4];
 int nextMove;
 
-Element emptyElement;
+void moveLeft() {
+	for (int i = 0; i <= 3; i++) {
+		int location = -1, counter = 0;
 
-void moveStep(Element element, int row, int col, int targetRow, int targetCol) {
-	Element targetElement = game[targetRow][targetCol];
-
-	if (targetElement.value == 0) {
-		game[row][col] = emptyElement;
-		game[targetRow][targetCol] = element;
-	}
-	else if (targetElement.value == element.value) {
-		if (!element.merged && !targetElement.merged) {
-			Element newElement;
-			newElement.value = element.value + targetElement.value;
-			newElement.merged = true;
-
-			game[row][col] = emptyElement;
-			game[targetRow][targetCol] = newElement;
+		for (int j = 0; j <= 3; j++) {
+			if (game[i][j] == 0) {
+				counter++;
+				if (counter == 1) location = j;
+			}
+			else if (game[i][j] != 0 && location != -1) {
+				game[i][location] = game[i][j];
+				game[i][j] = 0;
+				location = j;
+				counter = 0;
+			}
 		}
+
+		for (int j = 0; j < 3; j++) {
+			if (game[i][j] != 0 && game[i][j] == game[i][j + 1]) {
+				game[i][j] = game[i][j] * 2;
+				for (int k = j + 1; k < 3; k++) {
+					game[i][k] = game[i][k + 1];
+				}
+				game[i][3] = 0;
+			}
+		}
+
+   	}
+}
+
+void moveUp() {
+	for (int j = 0; j <= 3; j++) {
+		int location = -1, counter = 0;
+
+		for (int i = 0; i <= 3; i++) {
+			if (game[i][j] == 0) {
+				counter++;
+				if (counter == 1) location = i;
+			}
+			else if (game[i][j] != 0 && location != -1) {
+				game[location][j] = game[i][j];
+				game[i][j] = 0;
+				location = i;
+				counter = 0;
+			}
+		}
+
+		for (int i = 0; i < 3; i++) {
+			if (game[i][j] != 0 && game[i][j] == game[i + 1][j]) {
+				game[i][j] = game[i][j] * 2;
+				for (int k = i + 1; k < 3; k++) {
+					game[k][j] = game[k + 1][j];
+				}
+				game[3][j] = 0;
+			}
+		}
+
+   	}
+}
+
+void moveRight() {
+	for (int i = 0; i <= 3; i++) {
+		int location = -1, counter = 0;
+
+		for (int j = 3; j >= 0; j--) {
+			if (game[i][j] == 0) {
+				counter++;
+				if (counter == 1) location = j;
+			}
+			else if (game[i][j] != 0 && location != -1) {
+				game[i][location] = game[i][j];
+				game[i][j] = 0;
+				location = j;
+				counter = 0;
+			}
+		}
+
+		for (int j = 3; j > 0; j--) {
+			if (game[i][j] != 0 && game[i][j] == game[i][j - 1]) {
+				game[i][j] = game[i][j] * 2;
+				for (int k = j - 1; k > 0; k--) {
+					game[i][k] = game[i][k - 1];
+				}
+				game[i][0] = 0;
+			}
+		}
+
+   	}
+	
+}
+
+void moveDown() {
+	for (int j = 0; j <= 3; j++) {
+		int location = -1, counter = 0;
+
+		for (int i = 3; i >= 0; i--) {
+			if (game[i][j] == 0) {
+				counter++;
+				if (counter == 1) location = i;
+			}
+			else if (game[i][j] != 0 && location != -1) {
+				game[location][j] = game[i][j];
+				game[i][j] = 0;
+				location = i;
+				counter = 0;
+			}
+		}
+
+		for (int i = 3; i > 0; i--) {
+			if (game[i][j] != 0 && game[i][j] == game[i - 1][j]) {
+				game[i][j] = game[i][j] * 2;
+				for (int k = i - 1; k > 0; k--) {
+					game[k][j] = game[k - 1][j];
+				}
+				game[0][j] = 0;
+			}
+		}
+
 	}
-}
 
-void moveLeft(int i, int j) {
-	Element element = game[i][j];
-
-	for (int k = j; k > 0; k--)
-		moveStep(element, i, k, i, k-1);
-}
-
-void moveUp(int i, int j) {
-	Element element = game[i][j];
-
-	for (int k = i; k > 0; k--)
-		moveStep(element, k, j, k-1, j);
-}
-
-void moveRight(int i, int j) {
-	Element element = game[i][j];
-
-	for (int k = j; k < 4; k++)
-		moveStep(element, i, k, i, k+1);
-}
-
-void moveDown(int i, int j) {
-	Element element = game[i][j];
-
-	for (int k = i; k < 4; k++)
-		moveStep(element, k, j, k+1, j);
 }
 
 int main() {
-	emptyElement.value = 0;
-	emptyElement.merged = false;
-
-	for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
-			int value;
-			cin >> value;
-
-			game[i][j].value = value;
-			game[i][j].merged = false;
-		}
-	}
+	for (int i = 0; i <= 3; i++)
+		for (int j = 0; j <= 3; j++)
+			cin >> game[i][j];
 
 	cin >> nextMove;
 
-	for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
-			switch (nextMove)
-			{
-				case 0:
-					moveLeft(i, j);
-					break;
+	switch (nextMove) {
+		case 0:
+			moveLeft();
+			break;
 
-				case 1:
-					moveUp(i, j);
-					break;
+		case 1:
+			moveUp();
+			break;
 
-				case 2:
-					moveRight(i, j);
-					break;
+		case 2:
+			moveRight();
+			break;
 
-				case 3:
-					moveDown(i, j);
-					break;
-				
-				default:
-					break;
-			}
-		}
+		case 3:
+			moveDown();
+			break;
+		
+		default:
+			break;
 	}
 
-	for (int i = 0; i < 4; i++)
-	{
+	for (int i = 0; i <= 3; i++) {
 		for (int j = 0; j < 3; j++)
-		{
-			cout << game[i][j].value << " ";
-		}
+			cout << game[i][j] << " ";
 
-		cout << game[i][3].value << endl;
+		cout << game[i][3] << endl;
 	}
 
 	return 0;
